@@ -22,33 +22,33 @@ NEWSPIDER_MODULE = 'ins_comments.spiders'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+# COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
-          'cookie': 'mid=XNJdwgAEAAFQhOz5naU7BAY8aA6H; shbid=5093; shbts=1558601300.0202212; rur=FRC; csrftoken=hsQJlkGRAAk6kavxWBCLoaNxm7N1D5GZ; ds_user_id=7965489049; sessionid=7965489049%3AfSfHOXLdld3N7N%3A19; urlgen="{\"118.163.206.2\": 3462}:1hU7LW:bWXRXyg_Q04Q1W0hWztMVmojcQg", mid=XNJdwgAEAAFQhOz5naU7BAY8aA6H; shbid=5093; shbts=1558601300.0202212; rur=FRC; csrftoken=hsQJlkGRAAk6kavxWBCLoaNxm7N1D5GZ; ds_user_id=7965489049; sessionid=7965489049%3AfSfHOXLdld3N7N%3A19; urlgen="{\"118.163.206.2\": 3462}:1hU7LW:bWXRXyg_Q04Q1W0hWztMVmojcQg"; rur=FRC; mid=WyJBLAAEAAGwzHili1LhECwShi6S; mcd=3; csrftoken=XWsn427D8nBvKMTOwgooEn63ccZz5em3; urlgen="{\"118.163.206.2\": 3462}:1hU7Om:EyKO-_AZsDtlRHOrpUtkjiMTM7A"; ds_user_id=7965489049; csrftoken=XWsn427D8nBvKMTOwgooEn63ccZz5em3',
-          'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36",
-          'Accept': "*/*",
-          'Cache-Control': "no-cache",
-          'Postman-Token': "ce2ba0a4-5ecb-4a7e-bf74-7c4f9cfdebff,8b949fa8-5c55-4d6e-98ff-c37a0c17265e",
-          'Host': "www.instagram.com",
-          'accept-encoding': "gzip, deflate",
-          'Connection': "keep-alive",
-          'cache-control': "no-cache"
+            'cookie':'mid=XNJdwgAEAAFQhOz5naU7BAY8aA6H; shbid=5093; rur=FRC; shbts=1558870203.5640697; csrftoken=t3KWlfhTDsDygOw9niRN1zpV9OixhccR; ds_user_id=7965489049; sessionid=7965489049%3AuKxmEnBqlcm9wm%3A26;',
+            'User-Agent': "PostmanRuntime/7.13.0",
+            'Accept': "*/*",
+            'Cache-Control': "no-cache",
+            'Postman-Token': "6c1db66a-268c-4331-9b4e-156ddd03283c,07553ecd-af31-45b6-967a-09c360f5afc3",
+            'Host': "www.instagram.com",
+            'accept-encoding': "gzip, deflate",
+            'Connection': "keep-alive",
+            'cache-control': "no-cache"
 }
 
 # Enable or disable spider middlewares
@@ -95,3 +95,6 @@ DEFAULT_REQUEST_HEADERS = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+HTTPERROR_ALLOWED_CODES = [302,400,403,404,418,429,503]
+
