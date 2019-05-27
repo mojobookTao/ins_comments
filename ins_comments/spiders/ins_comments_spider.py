@@ -9,6 +9,7 @@ import time
 class InsSpider(Spider):
       name = 'ins_comments'
       logger = logging.getLogger(__name__)
+      start_urls = []
       h_s = '<script type="text/javascript">window.__initialDataLoaded(window._sharedData)'
       api = 'https://www.instagram.com/graphql/query/?query_hash=97b41c52301f77ce508f55e66d17620e&variables=%7B%22shortcode%22%3A%22{0}%22%2C%22first%22%3A12%2C%22after%22%3A%22%7B%5C%22cached_comments_cursor%5C%22%3A+%5C%22{1}%5C%22%2C+%5C%22bifilter_token%5C%22%3A+%5C%22{2}%5C%22%7D%22%7D'
       _api = 'https://www.instagram.com/graphql/query/?query_hash=97b41c52301f77ce508f55e66d17620e&variables=%7B%22shortcode%22%3A%22{0}%22%2C%22first%22%3A21%2C%22after%22%3A%22%7B%5C%22bifilter_token%5C%22%3A+%5C%22{1}%5C%22%2C+%5C%22tao_cursor%5C%22%3A+%5C%22{2}%5C%22%7D%22%7D'
