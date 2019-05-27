@@ -10,9 +10,13 @@ class InsSpider(Spider):
       logger = logging.getLogger(__name__)
       h_s = '<script type="text/javascript">window.__initialDataLoaded(window._sharedData)'
       api = 'https://www.instagram.com/graphql/query/?query_hash=97b41c52301f77ce508f55e66d17620e&variables=%7B%22shortcode%22%3A%22{0}%22%2C%22first%22%3A12%2C%22after%22%3A%22%7B%5C%22cached_comments_cursor%5C%22%3A+%5C%22{1}%5C%22%2C+%5C%22bifilter_token%5C%22%3A+%5C%22{2}%5C%22%7D%22%7D'
+      _api = 'https://www.instagram.com/graphql/query/?query_hash=97b41c52301f77ce508f55e66d17620e&variables=%7B%22shortcode%22%3A%22{0}%22%2C%22first%22%3A21%2C%22after%22%3A%22%7B%5C%22bifilter_token%5C%22%3A+%5C%22{1}%5C%22%2C+%5C%22tao_cursor%5C%22%3A+%5C%22{2}%5C%22%7D%22%7D'
+      __api = 'https://www.instagram.com/graphql/query/?query_hash=97b41c52301f77ce508f55e66d17620e&variables=%7B%22shortcode%22%3A%22{0}%22%2C%22first%22%3A20%2C%22after%22%3A%22%7B%5C%22bifilter_token%5C%22%3A+%5C%22{1}%5C%22%7D%22%7D'
       base_url = "https://www.instagram.com/graphql/query/?%s"
       file_path = './ins_comments.txt'
-      
+
+
+
       
       def __init__(self,post_url):
           if not post_url:
@@ -58,10 +62,16 @@ class InsSpider(Spider):
               end_cursor = loads(ret['data']['shortcode_media']['edge_media_to_parent_comment']['page_info']['end_cursor'])
               cached_comments_cursor = end_cursor.get('cached_comments_cursor')
               bifilter_token = end_cursor.get('bifilter_token')
-              if not cached_comments_cursor:
-                  self.logger.info('<==== no more comment ====>')
-                  return
-              url = self.api.format(post_id, cached_comments_cursor, bifilter_token)
+              tao_cursor = end_cursor.get('tao_cursor')
+              if not cached_comments_cursor and tao_cursor:
+                  self.logger.info('<==== continue fetch with tao_cursor ====>')
+                  url = self._api.format(post_id, bifilter_token, tao_cursor)
+              elif cached_comments_cursor and bifilter_token:
+                  self.logger.info('<==== continue fetch with cached_comments_cursor ====>')
+                  url = self.api.format(post_id, cached_comments_cursor, bifilter_token)
+              elif not cached_comments_cursor and not tao_cursor:
+                  self.logger.info('<==== continue fetch with bifilter_token ====>')
+                  url = self.__api.format(post_id, bifilter_token)
               self.logger.info('<====== fetch next {} ======>'.format(url))
               yield Request(url=url, callback=self.parse_comments, meta={'post_id': post_id})
           except Exception as e:
@@ -89,6 +99,6 @@ class InsSpider(Spider):
       
 if __name__ == '__main__':
     from scrapy import cmdline
-    post_url = 'https://www.instagram.com/p/Bx0OSIVnqMS/'
+    post_url = 'https://www.instagram.com/p/Bx8OM-lgcDj/'
     c_l = 'scrapy crawl ins_comments -a post_url={}'.format(post_url)
     cmdline.execute(c_l.split())
