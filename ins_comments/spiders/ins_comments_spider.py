@@ -3,6 +3,7 @@ from json import loads
 import logging
 import re
 import traceback
+import time
 
 
 class InsSpider(Spider):
@@ -21,7 +22,13 @@ class InsSpider(Spider):
       def __init__(self,post_url):
           if not post_url:
               return
-          self.start_urls = ['{}'.format(post_url)]
+          elif isinstance(post_url,list):
+              print(post_url)
+              self.start_urls.extend(post_url)
+          elif isinstance(post_url,str):
+              self.start_urls.append(post_url)
+          return
+      
      
           
       def parse(self, response):
@@ -49,8 +56,10 @@ class InsSpider(Spider):
           
       def parse_comments(self, response):
           try:
-              if 'fail' in response.text and len(response.text) <100:
+              if 'fail' in response.text and len(response.text) < 100:
                   self.logger.info('<==== fail {}'.format(response.text))
+                  time.sleep(60)
+                  yield Request(url=response.url,callback=self.parse_comments,meta=response.meta,dont_filter=True)
                   return
               post_id = response.meta['post_id']
               ret = loads(response.text)
@@ -88,10 +97,11 @@ class InsSpider(Spider):
               for data in ret['data']['shortcode_media']['edge_media_to_parent_comment']['edges']:
                   l.append(data['node'])
           else:
-              print(ret)
-          print(len(l))
+              self.logger.warn('<==== unhandled result %s' % ret)
+          self.logger.info('<==== fetch %s comments' % len(l))
           with open(self.file_path,'a') as f:
               f.write('\n {} \n'.format(l))
+              self.logger.info('<==== write to ins_comments.txt')
       
           
       def parse_reply_from_comment(self, comment_id):
@@ -99,6 +109,8 @@ class InsSpider(Spider):
       
 if __name__ == '__main__':
     from scrapy import cmdline
-    post_url = 'https://www.instagram.com/p/Bx8OM-lgcDj/'
-    c_l = 'scrapy crawl ins_comments -a post_url={}'.format(post_url)
-    cmdline.execute(c_l.split())
+    post_urls = ['https://www.instagram.com/p/Bx8OM-lgcDj/',
+                 'https://www.instagram.com/p/Bx9LbqUAhYS/']
+    for post_url in post_urls:
+        c_l = 'scrapy crawl ins_comments -a post_url={}'.format(post_url)
+        cmdline.execute(c_l.split())
