@@ -49,7 +49,7 @@ class InsSpider(Spider):
           
       def parse_comments(self, response):
           try:
-              if 'fail' in response.text:
+              if 'fail' in response.text and len(response.text) <100:
                   self.logger.info('<==== fail {}'.format(response.text))
                   return
               post_id = response.meta['post_id']
