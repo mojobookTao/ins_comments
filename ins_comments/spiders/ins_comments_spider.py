@@ -36,8 +36,10 @@ class InsSpider(Spider):
           try:
               post_id = response.url.split('/')[-2]
               ret = re.search(r'<script type="text/javascript">window._sharedData = (.*);</script>', response.text, re.S)
-              if ret:
-                  ret = ret.group(1).strip(self.h_s).replace(';</script>', '')
+              if not ret:
+                  self.logger.error('ret is %s' % ret)
+                  return
+              ret = ret.group(1).strip(self.h_s).replace(';</script>', '')
               ret = loads(ret)
               self.parse_data(ret)
               cached_comments_cursor = re.search(r'"cached_comments_cursor": "(\d+)"', str(ret), re.S)
